@@ -1,0 +1,49 @@
+@startuml
+title Africa Delivery - влияние и интерес
+
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam rectangle {
+  BorderColor #23395B
+  BackgroundColor #F7F9FC
+  FontColor #172033
+}
+
+rectangle "Высокое влияние / высокий интерес" as HH {
+  rectangle "Регуляторы и юристы" as Regulators
+  rectangle "Инвестор" as Investor
+  rectangle "CFO" as CFO
+  rectangle "CEO" as CEO
+  rectangle "CTO" as CTO
+  rectangle "Архитектор" as Architect
+}
+
+rectangle "Высокое влияние / средний интерес" as HM {
+  rectangle "Платёжные партнёры" as Payments
+  rectangle "Логистические партнёры" as Logistics
+}
+
+rectangle "Среднее влияние / высокий интерес" as MH {
+  rectangle "Покупатели" as Buyers
+  rectangle "Продавцы" as Sellers
+}
+
+Regulators -[hidden]-> Investor
+Investor -[hidden]-> CFO
+CFO -[hidden]-> CEO
+CEO -[hidden]-> CTO
+CTO -[hidden]-> Architect
+Payments -[hidden]-> Logistics
+Buyers -[hidden]-> Sellers
+
+note bottom of HH
+  Согласовать до начала реализации
+end note
+note bottom of HM
+  Зафиксировать договор и технический контракт
+end note
+note bottom of MH
+  Проверять решением пилота и метриками
+end note
+@enduml
+

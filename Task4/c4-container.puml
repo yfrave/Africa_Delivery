@@ -1,0 +1,38 @@
+@startuml
+!include <C4/C4_Container>
+title Africa Delivery - контейнеры и регионы
+
+Person(buyer, "Покупатель")
+Person(seller, "Продавец")
+System_Ext(payment, "M-Pesa / Flutterwave", "Лицензированный платёжный партнёр")
+System_Ext(logistics, "Sendbox / Sendy", "Логистика")
+
+System_Boundary(ad, "Africa Delivery") {
+  Container(pwa, "PWA", "Flutter Web", "Каталог, заказ, кабинет")
+
+  Boundary(sa, "AWS af-south-1, ЮАР") {
+    Container(cdn, "CDN / WAF", "CloudFront / WAF", "Статика и защита")
+    Container(app, "Модульное приложение", "Go", "Каталог, заказ, оплата, уведомления")
+    ContainerDb(coredb, "Операционная БД", "PostgreSQL", "Заказы, товары, токены профилей")
+    ContainerQueue(queue, "Очередь", "SQS", "Уведомления и интеграции")
+    Container(analytics, "Базовая аналитика", "SQL", "Обезличенные агрегаты")
+  }
+
+  Boundary(ng, "Лагос, Нигерия") {
+    Container(profile, "Сервис профиля Нигерии", "Go", "Доступ по токену")
+    ContainerDb(ngdb, "БД идентификаторов", "PostgreSQL", "Телефон, адрес, согласие")
+  }
+}
+
+Rel(buyer, pwa, "Использует", "HTTPS")
+Rel(seller, app, "Управляет товарами", "WhatsApp API / HTTPS")
+Rel(pwa, cdn, "Загружает")
+Rel(cdn, app, "Передаёт API-запрос")
+Rel(app, coredb, "Читает и пишет")
+Rel(app, queue, "Ставит задачи")
+Rel(app, profile, "Получает профиль по токену", "mTLS")
+Rel(profile, ngdb, "Читает и пишет")
+Rel(app, payment, "Создаёт платёж / принимает callback")
+Rel(app, logistics, "Создаёт доставку")
+Rel(queue, analytics, "Передаёт обезличенные события")
+@enduml

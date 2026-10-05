@@ -1,0 +1,35 @@
+@startuml
+!include <C4/C4_Context>
+
+title Africa Delivery - C4 Context
+
+Person(buyer, "Покупатель", "Ищет товар, оформляет и оплачивает заказ")
+Person(seller, "Продавец", "Размещает товары и получает выплаты")
+Person(operator, "Сотрудник", "Управляет каталогом, заказами и спорами")
+Person(executive, "Руководство", "Смотрит показатели продаж и работы")
+
+System(africa, "Africa Delivery", "Маркетплейс для каталога, заказа, оплаты и доставки")
+
+System_Ext(mpesa, "M-Pesa", "Оплата и выплаты в Кении")
+System_Ext(flutterwave, "Flutterwave", "Оплата и выплаты в Нигерии")
+System_Ext(paystack, "Paystack", "Резервный платёжный партнёр Нигерии")
+System_Ext(sendbox, "Sendbox", "Доставка в Нигерии")
+System_Ext(sendy, "Sendy", "Доставка в Кении")
+System_Ext(whatsapp, "WhatsApp Business API", "Канал продавцов и уведомления")
+System_Ext(gateway, "SMS/USSD-шлюз", "Уведомления и упрощённые операции без интернета")
+
+Rel(buyer, africa, "Просматривает каталог, оформляет заказ", "HTTPS")
+Rel(seller, africa, "Управляет товарами и заказами", "HTTPS / WhatsApp")
+Rel(operator, africa, "Модерирует и поддерживает", "HTTPS")
+Rel(executive, africa, "Получает обезличенную аналитику", "HTTPS")
+Rel(africa, mpesa, "Создаёт платёж, получает результат, отправляет выплату", "REST / callback")
+Rel(africa, flutterwave, "Создаёт платёж, получает результат, отправляет выплату", "REST / webhook")
+Rel(africa, paystack, "Переключает оплату при подтверждённом договоре", "REST / webhook")
+Rel(africa, sendbox, "Создаёт отправление, получает статусы", "REST / webhook")
+Rel(africa, sendy, "Создаёт отправление, получает статусы", "REST / webhook")
+Rel(africa, whatsapp, "Принимает команды продавцов и отправляет сообщения", "HTTPS")
+Rel(africa, gateway, "Отправляет SMS и принимает USSD-сессии", "HTTPS")
+
+SHOW_LEGEND()
+@enduml
+
