@@ -1,0 +1,29 @@
+@startuml
+title Сбор сигналов Africa Delivery
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+skinparam ArrowColor #355070
+skinparam defaultFontName Arial
+
+actor "Дежурный" as oncall
+rectangle "PWA / API / фоновые задачи" as app
+rectangle "OpenTelemetry SDK" as otel
+queue "OpenTelemetry Collector" as collector
+database "Prometheus\nметрики" as prometheus
+database "Loki\nлоги" as loki
+database "Tempo\nтрассы" as tempo
+rectangle "Grafana\nSLI и бюджет ошибки" as grafana
+rectangle "Alertmanager" as alerts
+
+app -> otel : метрики, логи, трассы
+otel -> collector : OTLP
+collector -> prometheus : метрики
+collector -> loki : очищенные логи
+collector -> tempo : выборка трасс
+prometheus -> grafana
+loki -> grafana
+tempo -> grafana
+prometheus -> alerts : правила SLO
+alerts -> oncall : критическое уведомление
+oncall -> grafana : диагностика по trace_id
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+title Поток ценности Africa Delivery
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam activity {
+  BackgroundColor #EAF1F8
+  BorderColor #355070
+  DiamondBackgroundColor #FFF2CC
+}
+
+start
+:Привлечь покупателя;
+note right: Поиск и просмотр
+:Найти товар;
+note right: Каталог
+:Сформировать заказ;
+note right: Корзина и заказ
+:Принять оплату;
+note right: Приём оплаты\nСверка
+if (Оплата подтверждена?) then (да)
+  :Передать заказ продавцу;
+  note right: Операции продавца
+  :Назначить доставку;
+  note right: Логистика партнёра
+  :Сообщить статус;
+  note right: Уведомления
+  :Выдать заказ;
+  note right: Получение и спор
+  :Сверить расчёты;
+  note right: Финансы и аналитика
+else (нет)
+  :Сохранить заказ для повтора;
+  note right: Поддержка и идемпотентность
+endif
+stop
+@enduml

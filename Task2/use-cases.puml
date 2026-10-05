@@ -1,0 +1,45 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+
+actor Покупатель as Buyer
+actor Продавец as Seller
+actor Сотрудник as Operator
+actor "Платёжный партнёр" as Payment
+actor "Логистический партнёр" as Logistics
+
+rectangle "Africa Delivery MVP" {
+  usecase "Просмотреть каталог" as UC1
+  usecase "Найти товар" as UC2
+  usecase "Собрать корзину" as UC3
+  usecase "Оформить заказ" as UC4
+  usecase "Оплатить заказ" as UC5
+  usecase "Получить уведомление" as UC6
+  usecase "Посмотреть статус" as UC7
+  usecase "Зарегистрировать продавца" as UC8
+  usecase "Добавить товар" as UC9
+  usecase "Подтвердить наличие" as UC10
+  usecase "Передать заказ в доставку" as UC11
+  usecase "Модерировать каталог" as UC12
+  usecase "Разобрать ошибку заказа" as UC13
+}
+
+Buyer --> UC1
+Buyer --> UC2
+Buyer --> UC3
+Buyer --> UC4
+Buyer --> UC6
+Buyer --> UC7
+Payment --> UC5
+
+Seller --> UC8
+Seller --> UC9
+Seller --> UC10
+Seller --> UC6
+
+Operator --> UC12
+Operator --> UC13
+Logistics --> UC11
+@enduml

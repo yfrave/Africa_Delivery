@@ -1,0 +1,42 @@
+@startuml
+title Africa Delivery - развёртывание MVP
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam nodeStyle rectangle
+top to bottom direction
+
+cloud "Интернет" as internet
+node "AWS af-south-1" as aws {
+  node "Балансировщик + WAF" as alb
+  node "Приложение\nзоны A + B" as app
+  database "PostgreSQL Multi-AZ\nprimary + standby" as db
+  queue "SQS" as sqs
+  storage "S3 + резервные копии" as s3
+  alb -[hidden]down-> app
+  app -[hidden]down-> db
+  db -[hidden]down-> s3
+  app -[hidden]right-> sqs
+}
+
+node "Лагос, местный провайдер" as lagos {
+  node "Profile API" as profile
+  database "БД идентификаторов" as ngdb
+  storage "Зашифрованная копия\nв отдельном ЦОД Нигерии" as ngbackup
+  profile -[hidden]down-> ngdb
+  ngdb -[hidden]down-> ngbackup
+}
+
+node "Резервная среда\nсоздаётся из кода" as dr
+cloud "M-Pesa / Flutterwave" as pay
+
+internet -down-> alb : HTTPS
+alb -down-> app : трафик
+app -down-> db : SQL
+app -right-> sqs : задачи
+db -down-> s3 : копия 5 мин
+app -right-> profile : mTLS + token
+profile -down-> ngdb
+ngdb -down-> ngbackup : копия
+app -right-> pay : платёж
+s3 -down-> dr : восстановление региона
+@enduml
